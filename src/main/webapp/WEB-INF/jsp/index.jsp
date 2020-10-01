@@ -26,11 +26,11 @@
         </h2>
 
         <!-- Login Form -->
-        <form>
+        <form action="/sign" method="post">
             <input type="text" id="login" class="fadeIn second" name="login" placeholder="логин">
-            <input type="text" id="password" class="fadeIn third" name="login" placeholder="пароль">
-            <input type="text" id="email" class="fadeIn fourth" name="login" placeholder="электронная почта">
-            <input type="text" id="fio" class="fadeIn fifth" name="login" placeholder="ФИО">
+            <input type="text" id="password" class="fadeIn third" name="password" placeholder="пароль">
+            <input type="text" id="email" class="fadeIn fourth" name="email" placeholder="электронная почта">
+            <input type="text" id="fio" class="fadeIn fifth" name="fio" placeholder="ФИО">
             <input type="submit" class="fadeIn sixth" value="Зарегистрироваться">
         </form>
 
