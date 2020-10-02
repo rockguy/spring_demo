@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+//TODO: уведомить пользователя, что запрос отправлен
 @Controller
 public class LoginController {
 
@@ -36,7 +37,6 @@ public class LoginController {
         user.setEmail(email);
         user.setFullName(fio);
         userService.addUser(user);
-        List<User> list = userService.list();
         return "/WEB-INF/jsp/index.jsp";
     }
 
