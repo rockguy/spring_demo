@@ -19,11 +19,12 @@ public class Producer {
     JmsTemplate jmsTemplate;
 
     public void sendMessage(final String queueName, final String message) {
-        Map map = new Gson().fromJson(message, Map.class);
+        /*Map map = new Gson().fromJson(message, Map.class);
         final String textMessage = "Hello" + map.get("name");
-        System.out.println("Sending message " + textMessage + "to queue - " + queueName);
+        System.out.println("Sending message " + textMessage + "to queue - " + queueName);*/
         jmsTemplate.send(queueName, session -> {
             TextMessage message1 = session.createTextMessage();
+            message1.setText(message);
             return message1;
         });
     }

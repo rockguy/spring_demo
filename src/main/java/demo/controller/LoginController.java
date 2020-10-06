@@ -1,13 +1,15 @@
 package demo.controller;
 
+import com.google.gson.Gson;
+import demo.dto.RequestDto;
+import demo.jms.Producer;
+import demo.model.Request;
 import demo.model.User;
 import demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 //TODO: уведомить пользователя, что запрос отправлен
@@ -16,6 +18,8 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    Producer producer;
 
     // Обычно я использую интерфейс Model, но в целом разницы нет,
     // т.к. используется реализация LinkedHashMap(Key, Val)
@@ -36,7 +40,12 @@ public class LoginController {
         user.setPassword(password);
         user.setEmail(email);
         user.setFullName(fio);
-        userService.addUser(user);
+        Request request = new Request();
+        request.setStatus(Request.RequestStatus.WAIT);
+        user.getRequests().add(request);
+        request.setUser(user);
+        userService.saveUser(user);
+        producer.sendMessage("verifier.in.queue", new Gson().toJson(new RequestDto(request)));
         return "/WEB-INF/jsp/index.jsp";
     }
 
