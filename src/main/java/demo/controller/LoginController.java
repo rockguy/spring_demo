@@ -5,6 +5,7 @@ import demo.dto.RequestDto;
 import demo.jms.Producer;
 import demo.model.Request;
 import demo.model.User;
+import demo.service.EmailService;
 import demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;

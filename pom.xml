@@ -21,6 +21,12 @@
     </parent>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
         <!-- содержит в себе необходимые библиотеки для создания ВЕБ приложения -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -30,6 +36,11 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <!-- Встроенный Tomcat контейнер -->

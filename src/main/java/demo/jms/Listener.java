@@ -2,7 +2,9 @@ package demo.jms;
 
 import com.google.gson.Gson;
 import demo.dto.CallbackDto;
+import demo.dto.RequestDto;
 import demo.model.Request;
+import demo.service.EmailService;
 import demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -20,37 +22,44 @@ public class Listener {
 
     @Autowired
     RequestService requestService;
+    @Autowired
+    EmailService emailService;
 
     @JmsListener(destination = "demo.in.queue")
     @SendTo("verifier.out.queue")
     public String receiveMessage(final Message jsonMessage) throws JMSException {
-        String messageData = null;
         System.out.println("Received message " + jsonMessage);
-        String response = null;
-        if(jsonMessage instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage)jsonMessage;
-            messageData = textMessage.getText();
-            Map map = new Gson().fromJson(messageData, Map.class);
-            response  = "Hello " + map.get("name");
+        CallbackDto callback = new CallbackDto();
+        try {
+            if (jsonMessage instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) jsonMessage;
+                RequestDto requestDto = new Gson().fromJson(textMessage.getText(), RequestDto.class);
+                Request request = requestService.getRequest(requestDto.getRequestId());
+                request.setStatus(requestDto.getStatus());
+                emailService.sendSimpleMessage(request.getUser().getEmail(), "Verification", request.getStatus());
+                requestService.saveRequest(request);
+                callback.setModelType(Request.class.getSimpleName());
+                callback.setId(requestDto.getRequestId());
+            }
+            callback.setStatus(true);
+
+        } catch (Throwable ex) {
+            callback.setStatus(false);
         }
-        return response;
+        return new Gson().toJson(callback);
     }
 
     @JmsListener(destination = "demo.out.queue")
     public void receiveCallbackMessage(final Message jsonMessage) throws JMSException {
-        String messageData = null;
         System.out.println("Received message " + jsonMessage);
-        String response = null;
-        if(jsonMessage instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage)jsonMessage;
-            messageData = textMessage.getText();
-            CallbackDto callback = new Gson().fromJson(messageData, CallbackDto.class);
-            if (callback.getModelType().equals(Request.class.getSimpleName())){
+        if (jsonMessage instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) jsonMessage;
+            CallbackDto callback = new Gson().fromJson(textMessage.getText(), CallbackDto.class);
+            if (callback.getModelType().equals(Request.class.getSimpleName()) && callback.getStatus()) {
                 Request request = requestService.getRequest(callback.getId());
-                request.setStatus(Request.RequestStatus.DELIVERED);
+                request.setDelivered(true);
                 requestService.saveRequest(request);
             }
         }
     }
-
 }

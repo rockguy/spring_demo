@@ -12,9 +12,10 @@ public class Request {
     @GeneratedValue
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
     private String status;
+    private boolean delivered;
 
     public Request() {
     }
@@ -47,10 +48,18 @@ public class Request {
         this.status = wait.name();
     }
 
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
+
     public enum RequestStatus{
         WAIT,
         SEND,
-        DELIVERED,
-        COMPLETE
+        ACCEPTED,
+        DENIED
     }
 }

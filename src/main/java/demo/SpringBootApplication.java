@@ -7,8 +7,12 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Properties;
 
 @EnableAutoConfiguration
 @ComponentScan("demo/")
@@ -28,4 +32,5 @@ public class SpringBootApplication extends SpringBootServletInitializer {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
